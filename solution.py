@@ -17,7 +17,39 @@ def solvepart1():
         sum = sum + val
     print(sum)
 
-def checkPattern(pattern):
+def solvepart2():
+    data = fileRead("input.txt")
+    data.append("\n")
+    patterns = []
+    currentPattern = []
+    for row in data:
+        if (row == "\n"):
+            patterns.append(currentPattern.copy())
+            currentPattern = []
+        else:
+            currentPattern.append(row.strip())
+
+    sum = 0
+    for pattern in patterns:
+        val = checkSmudge(pattern)
+        print(val)
+        sum = sum + val
+    print(sum)
+
+def checkSmudge(pattern):
+    oldPatternVal = checkPattern(pattern)
+    for i in range(len(pattern)):
+        for j in range(len(pattern[0])):
+            newPattern = pattern.copy()
+            if pattern[i][j] == "#":
+                newPattern[i] = newPattern[i][:j] + "." + newPattern[i][j+1:]
+            else:
+                newPattern[i] = newPattern[i][:j] + "#" + newPattern[i][j+1:]
+            result = checkPattern(newPattern, oldPatternVal)
+            if result != 0:
+                return result
+
+def checkPattern(pattern, oldPatternVal = -1):
     sum = 0
 
     for i in range(1,len(pattern[0])):
@@ -30,7 +62,7 @@ def checkPattern(pattern):
                 sucessA = False
             if not (left == right[:len(left)]):
                 sucessB = False
-        if sucessA or sucessB:
+        if (sucessA or sucessB) and i != oldPatternVal:
             sum = sum + i
             break
 
@@ -44,7 +76,7 @@ def checkPattern(pattern):
                 sucessA = False
             if not (left == right[:len(left)]):
                 sucessB = False
-        if sucessA or sucessB:
+        if (sucessA or sucessB) and i*100 != oldPatternVal:
             sum = sum + (i * 100)
             break
     return sum
@@ -56,4 +88,4 @@ def fileRead(name):
         data.append(line);
     return data
 
-solvepart1()
+solvepart2()
